@@ -74,6 +74,7 @@ private:
 在具体实现方面，AutoTimer的构造函数需要分配AutoTimer::pmImpl的内存，并在析构函数中销毁它。所有私有成员必须通过pmImpl指针访问。在大部分实际案例中，使用这种简洁的、不包含实现的API利远大于弊。
 下面是设计良好的API的.h文件对应的.cpp文件完整代码：
 ```C++
+/* autotimer.cpp */
 #include "autotimer.h"
 #include <iostream>
 #ifdef _WIN32
@@ -125,8 +126,22 @@ AutoTimer::~AutoTimer()
 #endif
 ```
 由于与平台相关的代码的#ifdef语句存在使得.cpp文件看起来有些凌乱，但重要的是，这种凌乱完全包含在.cpp中。原先暴露的成员变量、函数都包在了.cpp中。将Impl类声明为AutoTimer类的私有内嵌类，避免了与该实现相关的符号污染全局命名空间，而且只有AutoTimer的方法可以访问Impl的成员，.cpp中其它类或函数不能访问Impl。
+利用上面的"autotimer.h"和"autotimer.cpp"和下面的"main.cpp"一起建立工程便可运行测试：
+```C++
+/* main.cpp */
+#include "autotimer.h"
+#include <windows.h>
+int main()
+{
+	AutoTimer aTimer("GaryLau");
+	Sleep(1000);
+	return 0;
+}
+```
+
 ## 参考文献
 Martin Reddy 著, 刘晓娜、臧秀涛、林建 译. API Design for C++ [D]. 人民邮电出版社, 2017.
 <div align=center><img src="http://img.blog.csdn.net/2018030517011018?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGl1Z2FuNTI4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" width = 384 height = 384 alt="ellipse" align=center /></div><div align=center></div>
 更多资料请移步github： 
 https://github.com/GarryLau/cplusplus
+
